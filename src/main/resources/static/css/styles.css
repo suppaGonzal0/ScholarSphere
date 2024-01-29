@@ -1,0 +1,105 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3rem;
+    height: 72vh;
+}
+
+a {
+    color: black;
+}
+
+hr {
+    border: 1px solid #BDC3CC;
+}
+
+.error, .required {
+    color: red;
+}
+
+.btn {
+    width: 100%;
+    background-color: #213555;
+    color: #fff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #1d3e79;
+    color: #fff;
+}
+
+img {
+    width: 35em;
+    height: 35em;
+}
+
+.textarea {
+    height: 10em;
+}
+
+.section {
+    height: 90vh;
+    display: flex;
+    align-items: center;
+
+    .last {
+        width: 25em;
+        height: 25em;
+    }
+
+    & a:hover, & button:hover {
+        background-color: #BDC3CC;
+        color: #213555;
+    }
+
+    & a {
+        width: 25em;
+    }
+
+    &:nth-child(odd) {
+        background-color: #ffffff;
+    }
+
+    &:nth-child(even) {
+        background-color: #ecedf3;
+    }
+}
+
+.sub {
+    flex: 1;
+
+    & p {
+        font-size: 18px;
+    }
+}
+
+.badge {
+    background-color: #BDC3CC;
+    color: #213555;
+    padding: 8px;
+}
+
+#authorsDropdown, #tagsDropdown, .unfollow {
+    background-color: white;
+    color: #212529;
+    border-color: #ced4da;
+}
+
+.dropdown-menu {
+    width: 100%;
+    padding: 10px 20px;
+
+    & label {
+        margin-left: 10px;
+    }
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0,
+    'wght' 700,
+    'GRAD' 200,
+    'opsz' 48
+}

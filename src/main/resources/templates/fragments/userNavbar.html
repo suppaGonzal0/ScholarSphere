@@ -1,0 +1,31 @@
+<nav class="navbar sticky-top navbar-expand-lg" style="background-color: #213555;">
+
+	<a class="navbar-brand ms-5" style="color: #fff;" th:href="@{/}">
+		<h3>ScholarSphere</h3>
+	</a>
+
+	<div th:fragment="navbar" class="collapse navbar-collapse d-flex justify-content-end" id="navbarNavAltMarkup">
+
+		<div class="navbar-nav me-5">
+			<a class="nav-item nav-link" style="color: #fff;" th:href="@{/}">
+				<b>Home</b>
+			</a>
+
+			<a class="nav-item nav-link" style="color: #fff;" th:href="@{/paper/upload}">
+				<b>Upload</b>
+			</a>
+
+			<a class="nav-item nav-link" style="color: #fff;" th:href="@{'/profile/' + ${session.id}}">
+				<b>Profile</b>
+			</a>
+
+			<a class="nav-item nav-link" style="color: #fff;" th:href="@{/notification}">
+				<b>Notifications</b>
+			</a>
+
+			<form th:action="@{/logout}" method="post">
+				<button type="submit" class="logoutBtn btn">Logout</button>
+			</form>
+		</div>
+	</div>
+</nav>
