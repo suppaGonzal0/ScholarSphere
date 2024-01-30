@@ -1,10 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<title>Title</title>
-	</head>
-	<body>
+<nav class="navbar sticky-top navbar-expand-lg" style="background-color: #213555;">
 
-	</body>
-</html>
+	<a class="navbar-brand ms-5" style="color: #fff;">
+		<h3 th:text="#{nav.brand}"></h3>
+	</a>
+
+	<div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNavAltMarkup">
+
+		<div class="navbar-nav me-5">
+			<a class="nav-item nav-link" style="color: #fff;" th:href="@{/}">
+				<b th:text="#{nav.pending}"></b>
+			</a>
+
+			<a class="nav-item nav-link" style="color: #fff;" th:href="@{/conference}">
+				<b th:text="#{nav.conference}"></b>
+			</a>
+
+			<a class="nav-item nav-link" style="color: #fff;" th:href="@{/tag}">
+				<b th:text="#{nav.tag}"></b>
+			</a>
+
+			<form th:action="@{/logout}" method="post">
+				<button type="submit" class="logoutBtn btn" th:text="#{label.logout}"></button>
+			</form>
+		</div>
+	</div>
+</nav>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<div th:replace="~{fragments/header}"></div>
+		<title th:text="#{title.pending}"/>
+	</head>
+	<body class="text-center">
+		<div th:replace="~{fragments/adminNavbar}"></div>
+
+		<div class="d-flex flex-column align-items-center mt-5" style="min-height: 70vh;">
+			<th:block th:if="${papers != null and not #lists.isEmpty(papers)}">
+				<h3 th:text="#{title.pending}"/>
+				<form action="/pending-approvals" method="post">
+					<th:block th:each="paper : ${papers}">
+						<div class="accordion d-flex gap-3 mt-3">
+							<input type="checkbox" name="approvedPapers" th:value="${paper.id}" style="transform: scale(1.5); margin-right: 5px;">
+							<div class="accordion-item" style="width: 700px">
+								<h2 class="accordion-header" th:id="'heading' + ${paper.id}">
+									<div class="accordion-button d-flex gap-2 collapsed" type="button"
+									     data-bs-toggle="collapse" th:data-bs-target="'#collapse' + ${paper.id}"
+									     aria-controls="'collapse' + ${paper.id}">
+										<p class="m-0" th:text="${paper.title}"></p>
+									</div>
+								</h2>
+								<div th:id="'collapse' + ${paper.id}" class="accordion-collapse collapse"
+								     aria-labelledby="'heading' + ${paper.id}"
+								     th:data-bs-parent="#accordionExample">
+									<div class="accordion-body">
+										<div class="d-flex gap-2">
+											<div class="d-flex gap-2 flex-grow-1 m-0">
+												<p><fmt:formatDate value="${paper.publicationDate}" pattern="MMM yyyy"/></p>
+												<p>•</p>
+												<p>
+													<a th:href="@{/conference/{id}(id=${paper.conference.id})}">
+														<span th:text="${paper.conference.title}"></span>
+													</a>
+												</p>
+											</div>
+											<a class="btn btn-sm" style="width: 50px"
+											   th:href="@{/download/{id}(id=${paper.id})}">
+												<span class="material-icons">download</span>
+											</a>
+										</div>
+
+										<div class="d-flex flex-wrap gap-2">
+											<b>Authors:</b>
+											<span th:each="author : ${paper.authors}" th:text="${author.email}"></span>
+										</div>
+
+										<div class="d-flex flex-wrap gap-2 mt-3">
+                                        <span th:each="tag : ${paper.tags}">
+                                            <a th:href="@{/tag/{id}(id=${tag.id})}" class="badge">#<span th:text="${tag.name}"></span></a>
+                                        </span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<a th:href="@{/pending-approvals/unapprove{id}(id=${paper.id})}" class="btn unfollow" style="width: 50px; height: 40px">
+								<span class="material-icons">delete</span>
+							</a>
+						</div>
+					</th:block>
+
+					<button type="submit" class="btn mt-4 w-50" id="approveButton">Approve</button>
+				</form>
+			</th:block>
+			<th:block th:unless="${papers != null and not #lists.isEmpty(papers)}">
+				<div class="card p-5 my-5">
+					<h4 class="d-flex align-items-center gap-2">
+						No pending approvals.
+					</h4>
+				</div>
+			</th:block>
+		</div>
+
+		<div th:replace="~{fragments/footer}"></div>
+	</body>
+</html>

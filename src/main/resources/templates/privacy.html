@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<div th:replace="~{fragments/header}"></div>
+		<title th:text="#{title.privacy}"/>
+	</head>
+	<body>
+		<div th:replace="~{fragments/plainNavbar}"></div>
+
+		<div class="d-flex flex-column align-items-center justify-content-start mt-5" style="min-height: 75vh;">
+			<h3 th:text="#{header.privacy}"/>
+
+			<section class="w-50">
+				<h5>Introduction</h5>
+				<p>Your Company Name ("us", "we", or "our") operates the website and services (the "Service").</p>
+				<p>This page informs you of our policies regarding the collection, use, and disclosure of personal data
+					when you use our Service and the choices you have associated with that data.</p>
+				<p>We use your data to provide and improve the Service. By using the Service, you agree to the
+					collection and use of information in accordance with this policy.</p>
+			</section>
+
+			<section class="w-50">
+				<h5>Information Collection and Use</h5>
+				<p>We collect several different types of information for various purposes to provide and improve our
+					Service to you.</p>
+				<h5>Types of Data Collected</h5>
+				<ul>
+					<li>Personal Data</li>
+					<li>Usage Data</li>
+					<li>Tracking & Cookies Data</li>
+				</ul>
+			</section>
+
+			<section class="w-50">
+				<h5>Use of Data</h5>
+				<p>Your Company Name uses the collected data for various purposes:</p>
+				<ul>
+					<li>To provide and maintain the Service</li>
+					<li>To notify you about changes to our Service</li>
+					<li>To provide customer care and support</li>
+					<li>To monitor the usage of the Service</li>
+					<li>To detect, prevent and address technical issues</li>
+				</ul>
+			</section>
+
+			<section class="w-50">
+				<h5>Disclosure of Data</h5>
+				<p>Your Company Name may disclose your Personal Data in the good faith belief that such action is
+					necessary to:</p>
+				<ul>
+					<li>Comply with a legal obligation</li>
+					<li>Protect and defend the rights or property of Your Company Name</li>
+					<li>Prevent or investigate possible wrongdoing in connection with the Service</li>
+					<li>Protect the personal safety of users of the Service or the public</li>
+					<li>Protect against legal liability</li>
+				</ul>
+			</section>
+		</div>
+
+		<div th:replace="~{fragments/footer}"></div>
+	</body>
+</html>

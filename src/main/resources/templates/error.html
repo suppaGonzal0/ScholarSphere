@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 	<head>
-		<meta charset="UTF-8">
-		<title>Title</title>
+		<div th:replace="~{fragments/header}"></div>
+		<title th:text="|ERROR ${error.code}|"></title>
 	</head>
-	<body>
-		<p>dasdasdas</p>
+	<body class="text-center">
+		<div th:replace="~{fragments/plainNavbar}"></div>
+
+		<div class="card mx-auto mt-5 w-50">
+			<div class="card-header">
+				<h2 th:text="${error.code} + ' : ' + ${error.description} + '!'"></h2>
+			</div>
+			<div class="card-body">
+				<p th:text="${error.message}"></p>
+				<a th:href="@{/}" class="btn w-25 active m-3" role="button" aria-pressed="true">
+					<p class="m-0" th:text="#{title.home}"/>
+				</a>
+			</div>
+		</div>
 	</body>
 </html>

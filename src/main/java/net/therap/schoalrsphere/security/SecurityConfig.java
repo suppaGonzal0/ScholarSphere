@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,12 +47,15 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-		http.authorizeHttpRequests(configurer ->
-						configurer
-								.requestMatchers("/css/**").permitAll()
-								.requestMatchers("/").hasAnyRole("ADMIN", "REGULAR")
-								.anyRequest()
-								.authenticated()
+		http
+				.authorizeHttpRequests(configurer ->
+								configurer
+										.requestMatchers("/").permitAll()
+										.requestMatchers("/css/**", "/js/**", "/images/**", "/terms", "/privacy", "/ethics").permitAll()
+//								.requestMatchers("/").hasAnyRole("ADMIN", "REGULAR")
+
+										.anyRequest()
+										.authenticated()
 				)
 				.formLogin(form ->
 						form
@@ -73,7 +75,7 @@ public class SecurityConfig {
 								.failureForwardUrl("/login")
 				)
 				.logout(
-						LogoutConfigurer::permitAll
+						logout -> logout.permitAll()
 				)
 				.exceptionHandling(configurer ->
 						configurer.accessDeniedHandler((request, response, accessDeniedException) -> {

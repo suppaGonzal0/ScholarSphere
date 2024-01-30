@@ -58,7 +58,7 @@ public class GlobalExceptionHandlerAdvice {
 	public String handleNoResourceFoundException(NoResourceFoundException e, Model model) {
 		log.error(e.getMessage());
 
-		model.addAttribute(KEY_ERROR, new Error("404", "Not Found", "Sorry this page is not available"));
+		model.addAttribute(KEY_ERROR, new Error("404", "Not Found", "Page Not Found"));
 
 		return ERROR_PAGE;
 	}

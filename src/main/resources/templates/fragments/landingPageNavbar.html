@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<title>Title</title>
-	</head>
-	<body>
+<nav class="navbar sticky-top navbar-expand-lg" style="background-color: #fff;">
+	<a class="navbar-brand ms-5" style="color: #213555;">
+		<h3 th:text="#{nav.brand}"></h3>
+	</a>
 
-	</body>
-</html>
+	<div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNavAltMarkup">
+		<div class="navbar-nav me-5">
+			<a class="nav-item nav-link" style="color: #213555;" th:href="@{/login}">
+				<b th:text="#{nav.login}"></b>
+			</a>
+
+			<a class="nav-item nav-link" style="color: #213555;" th:href="@{/register/step01}">
+				<b th:text="#{nav.get.started}"></b>
+			</a>
+		</div>
+	</div>
+</nav>
