@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <div th:replace="~{fragments/header}"></div>
+    <title th:text="#{title.login}"/>
+</head>
+<body>
+<div th:replace="~{fragments/userNavbar}"></div>
+
+<div class="d-flex flex-column gap-5 align-items-center mt-5" style="min-height: 70vh;">
+    <div th:if="${not #lists.isEmpty(userList)}">
+        <h3>Following</h3>
+        <div class="d-flex flex-wrap gap-2">
+            <div th:each="user : ${userList}" class="card" style="width: 18rem;">
+                <div class="card-header" th:utext="'@' + ${user.username}"></div>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${user.fullName}"></h5>
+                    <p class="card-text" th:text="${user.email}"></p>
+                    <a th:href="@{/profile(id=${user.id})}" class="btn btn-primary">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:unless="${not #lists.isEmpty(userList)}">
+        <div class="card p-5 my-5">
+            <h4 class="d-flex align-items-center gap-2">
+                Not following anyone.
+            </h4>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer}"></div>
+</body>
+</html>

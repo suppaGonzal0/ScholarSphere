@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+    <div th:replace="~{fragments/header}"></div>
+    <title th:utext="${conference.title}"></title>
+</head>
+<body>
+
+<div sec:authorize="hasRole('ADMIN')">
+    <div th:replace="~{fragments/adminNavbar}"></div>
+</div>
+<div sec:authorize="hasRole('REGULAR')">
+    <div th:replace="~{fragments/userNavbar}"></div>
+</div>
+
+<div class="d-flex flex-column align-items-center mt-5" style="min-height: 70vh;">
+    <h3 th:utext="${conference.title}"></h3>
+    <p th:utext="${conference.location}"></p>
+    <div sec:authorize="hasRole('ADMIN')">
+        <div th:if="${not #lists.isEmpty(papers)}" th:each="paper : ${papers}" class="w-50 mt-4 gap-4">
+            <div class="card p-3">
+                <p th:utext="${paper.title}"></p>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(papers)}" class="d-flex flex-column w-100 mt-4 gap-4">
+            <div class="card p-3">
+                <h4 class="my-3 text-center" th:text="#{message.no.papers.published}"></h4>
+            </div>
+        </div>
+    </div>
+    <div sec:authorize="hasRole('REGULAR')">
+        <div th:each="paper : ${papers}" class="card w-50 my-2">
+            <div class="card-body">
+                <h5 class="card-title"><a th:href="@{/paper/{id}(id=${paper.id})}" th:utext="${paper.title}"></a></h5>
+                <div class="d-flex gap-2">
+                    <p th:utext="${#dates.format(paper.publicationDate, 'MMM yyyy')}"></p>
+                    <p>•</p>
+                    <p>
+                        <a th:href="@{/conference/{id}(id=${paper.conference.id})}"
+                           th:utext="${paper.conference.title}"></a>
+                    </p>
+                    <p>•</p>
+                    <div class="d-flex justify-content-center">
+                        <span class="material-icons">grade</span>
+                        <span th:with="totalRated=${paper.totalRated}, totalRating=${paper.totalRating},
+                                       avgRating=${totalRated > 0 ? totalRating/totalRated : 0}">
+                                    <span th:if="${totalRated eq 0}" th:text="#{message.no.user.rating}"/>
+                                    <span th:if="${totalRated > 1}"
+                                          th:text="${avgRating} + ' (' + ${totalRated} + ' users rated)'"/>
+                                    <span th:if="${totalRated == 1}"
+                                          th:text="${avgRating} + ' (' + ${totalRated} + ' user rated)'"/>
+                        </span>
+                    </div>
+                    <p>•</p>
+                    <div class="d-flex justify-content-center">
+                        <span class="material-icons">download</span>
+                        <span th:text="${paper.downloadCount + ' downloads'}"></span>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a th:each="author : ${paper.authors}" th:href="@{/profile/{id}(id=${author.id})}"
+                       th:utext="${author.email}"></a>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <a th:href="@{/tag/{id}(id=${tag.id})}" th:each="tag : ${paper.tags}" class="badge"
+                       th:utext="'#' + ${tag.name}"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer}"></div>
+</body>
+</html>

@@ -12,11 +12,10 @@ CREATE TABLE users
     country    VARCHAR(48)  NOT NULL,
     city       VARCHAR(48)  NOT NULL,
     bio        VARCHAR(256),
-    role       VARCHAR(255) NOT NULL,
     enabled    SMALLINT     NOT NULL DEFAULT 1,
     CONSTRAINT pk_users PRIMARY KEY (id),
-    CONSTRAINT unique_username UNIQUE (username),
-    CONSTRAINT unique_email UNIQUE (email)
+    CONSTRAINT uk_username UNIQUE (username),
+    CONSTRAINT uk_email UNIQUE (email)
 );
 
 CREATE TABLE authorities
@@ -24,7 +23,7 @@ CREATE TABLE authorities
     email     VARCHAR(50) NOT NULL,
     authority VARCHAR(50) NOT NULL,
     CONSTRAINT fk_authorities FOREIGN KEY (email) REFERENCES users (email),
-    CONSTRAINT unique_email_authority UNIQUE (email, authority)
+    CONSTRAINT uk_email_authority UNIQUE (email, authority)
 );
 
 CREATE TABLE conference
@@ -37,7 +36,7 @@ CREATE TABLE conference
     country    VARCHAR(48)  NOT NULL,
     city       VARCHAR(48)  NOT NULL,
     CONSTRAINT pk_conference PRIMARY KEY (id),
-    CONSTRAINT unique_title UNIQUE (title)
+    CONSTRAINT uk_title UNIQUE (title)
 );
 
 CREATE TABLE paper
@@ -86,7 +85,7 @@ CREATE TABLE tag
     version    INT         NOT NULL,
     name       VARCHAR(32) NOT NULL,
     CONSTRAINT pk_tag PRIMARY KEY (id),
-    CONSTRAINT unique_name UNIQUE (name)
+    CONSTRAINT uk_name UNIQUE (name)
 );
 
 CREATE TABLE paper_user

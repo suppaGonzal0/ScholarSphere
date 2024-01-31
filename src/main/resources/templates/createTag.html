@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <head>
+        <div th:replace="~{fragments/header}"></div>
+        <title th:text="#{title.create.tag}"/>
+    </head>
+    <body>
+        <div th:replace="~{fragments/adminNavbar}"></div>
+
+        <div class="d-flex flex-column align-items-center mt-5" style="min-height: 70vh;">
+            <h3 th:text="#{header.create.tag}"/>
+
+            <form th:action="@{/tag}" method="post" th:object="${tag}"
+                  class="d-flex flex-column w-50 mt-4 gap-4">
+                <div class="d-flex gap-3">
+                    <div class="form-group w-100">
+                        <label for="name" th:text="#{label.tag.name}"><span class="required">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">#</span>
+                            <input type="text" class="form-control" th:field="*{name}" id="name"/>
+                        </div>
+                        <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></small>
+                    </div>
+                    <button type="submit" class="btn mt-3" style="width: 100px" th:text="#{label.create}"/>
+                </div>
+            </form>
+
+            <div class="d-flex flex-wrap gap-3 mt-4">
+                <div th:each="tag : ${tagList}">
+                    <a th:href="@{/tag/{id}(id=${tag.id})}">
+                        <div class="card p-3" th:text="'#' + ${tag.name}"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+      <div th:replace="~{fragments/footer}"></div>
+    </body>
+</html>
