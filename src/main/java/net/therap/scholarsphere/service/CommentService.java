@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static net.therap.scholarsphere.enums.Action.COMMENT;
+
 /**
  * @author mehzabinaothoi
  * @since 1/12/24
@@ -20,27 +22,20 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
-//    @Autowired
-//    private PaperService paperService;
-
     @Autowired
     private UserService userService;
 
-//    @Autowired
-//    private NotificationService notificationService;
+    @Autowired
+    private NotificationService notificationService;
 
-//    @Transactional
-//    public void save(Comment comment, long userId) {
-//        Paper paper = paperService.findById(comment.getPaper().getId());
-//        comment.setPaper(paper);
-//
-//        User user = userService.findById(userId);
-//        comment.setUser(user);
-//
-//        entityManager.persist(comment);
-//
-//        notificationService.notifyForPaper(comment.getPaper().getId(), Action.COMMENT);
-//    }
+    @Transactional
+    public void save(Comment comment, User user) {
+        comment.setUser(user);
+
+        commentRepository.save(comment);
+
+        notificationService.notifyForPaper(comment.getPaper(), COMMENT);
+    }
 
     @Transactional
     public List<Comment> findAll(long id, String sort) {
@@ -61,7 +56,7 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-//        notificationService.notifyForLike(userId, commentId);
+        notificationService.notifyForLike(user, comment);
     }
 
     @Transactional

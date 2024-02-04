@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static net.therap.scholarsphere.enums.Action.CREATE;
 import static net.therap.scholarsphere.util.Util.hashPassword;
@@ -22,93 +20,79 @@ import static net.therap.scholarsphere.util.Util.hashPassword;
 @Service
 public class UserService {
 
+	@Autowired
+	private UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    private NotificationService notificationService;
 
+	@Transactional
+	public void saveOrUpdate(User user, Action action) {
+		if (CREATE.equals(action)) {
+			hashPassword(user);
+		}
 
-//    @Autowired
-//    private NotificationService notificationService;
+		userRepository.save(user);
+	}
 
-    @Transactional
-    public void saveOrUpdate(User user, Action action) {
-        if (CREATE.equals(action)) {
-            hashPassword(user);
-        }
+	@Transactional
+	public User findByEmail(String email) {
+		return userRepository.findByEmail(email);
+	}
 
-        userRepository.save(user);
-    }
+	public List<User> findAllUsers() {
+		return userRepository.findAllRegularUsers();
+	}
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+	public User findById(long id) {
+		return userRepository.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("No user found with id: " + id));
+	}
 
-    public List<User> findAllUsers() {
-        return userRepository.findAllRegularUsers();
-    }
+	@Transactional
+	public void followOrUnfollow(Long followerId, Long followingId, String action) {
+		Action actionType = Action.valueOf(action.toUpperCase());
 
-    public User findById(long id) {
-        return userRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("No user found with id: " + id));
-    }
+		User follower = userRepository.getReferenceById(followerId);
+		User following = userRepository.getReferenceById(followingId);
 
-    @Transactional
-    public void followOrUnfollow(Long followerId, Long followingId, String action) {
-        Action actionType = Action.valueOf(action.toUpperCase());
+		switch (actionType) {
+			case FOLLOW -> {
+				following.getFollowers().add(follower);
+				follower.getFollowings().add(following);
+			}
+			case UNFOLLOW -> {
+				following.getFollowers().remove(follower);
+				follower.getFollowings().remove(following);
+			}
+		}
 
-        User follower = userRepository.getReferenceById(followerId);
-        User following = userRepository.getReferenceById(followingId);
+		userRepository.save(following);
+		userRepository.save(follower);
 
-        switch (actionType) {
-            case FOLLOW:
-                following.getFollowers().add(follower);
-                follower.getFollowings().add(following);
+        notificationService.notifyForFollow(following, action);
+	}
 
-                break;
-            case UNFOLLOW:
-                following.getFollowers().remove(follower);
-                follower.getFollowings().remove(following);
+	@Transactional
+	public boolean isFollowed(Long followerId, Long followingId) {
+		User follower = userRepository.getReferenceById(followerId);
+		User following = userRepository.getReferenceById(followingId);
 
-                break;
-        }
+		return following.getFollowers().contains(follower);
+	}
 
-        userRepository.save(following);
-        userRepository.save(follower);
+	@Transactional
+	public List<User> getFollowers(long id) {
+		return userRepository.findByFollowings_Id(id);
+	}
 
-//        notificationService.notifyForFollow(followingId, action);
-    }
-
-    @Transactional
-    public boolean isFollowed(Long followerId, Long followingId) {
-        User follower = userRepository.getReferenceById(followerId);
-        User following = userRepository.getReferenceById(followingId);
-
-        return following.getFollowers().contains(follower);
-    }
-
-    @Transactional
-    public List<User> getFollowers(long id) {
-        return userRepository.findByFollowings_Id(id);
-    }
-
-    @Transactional
-    public List<User> getFollowings(long id) {
-        return userRepository.findByFollowers_Id(id);
-    }
+	@Transactional
+	public List<User> getFollowings(long id) {
+		return userRepository.findByFollowers_Id(id);
+	}
 
 //    @Transactional
 //    public List<Paper> getPapers(long id) {
 //        return userRepository.findByPapersIsApprovedTrueAndId(id);
 //    }
-
-    @Transactional
-    public Map<String, Integer> getCounts(long id) {
-        User user = userRepository.getReferenceById(id);
-
-        Map<String, Integer> count = new HashMap<>();
-        count.put("follower", user.getFollowers().size());
-        count.put("following", user.getFollowings().size());
-        count.put("paper", user.getPapers().size());
-
-        return count;
-    }
 }

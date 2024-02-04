@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+	<head>
+		<div th:replace="~{fragments/header}"></div>
+		<title th:text="#{title.login}"/>
+	</head>
+	<body>
+		<div th:replace="~{fragments/plainNavbar}"></div>
+
+		<div class="d-flex flex-column align-items-center mt-5">
+			<h3>Sign up for free</h3>
+			<small>
+				Or <a th:href="@{/register/cancel}">sign in to your existing account</a>
+			</small>
+		</div>
+
+		<div class="d-flex justify-content-center align-content-center">
+			<div class="card m-4" style="width: 550px;">
+				<div class="card-header">
+					<div class="progress">
+						<div class="progress-bar" role="progressbar" style="width: 5%; background-color: #213555"
+						     aria-valuenow="5" aria-valuemin="0" aria-valuemax="100">
+						</div>
+					</div>
+				</div>
+				<div class="card-body">
+					<form th:action="@{/register/step01}" method="post" th:object="${registerCommand}"
+					      class="d-flex flex-column gap-4 p-5">
+						<div class="d-flex gap-3">
+							<div class="form-group w-100">
+								<label for="firstName">First Name: <span class="required">*</span></label>
+								<input th:field="*{user.fullName.firstName}" class="form-control mt-2" id="firstName"/>
+								<div th:if="${#fields.hasErrors('user.fullName.firstName')}" class="error"
+								     th:errors="*{user.fullName.firstName}"></div>
+							</div>
+
+							<div class="form-group w-100">
+								<label for="lastName">Last Name: <span class="required">*</span></label>
+								<input th:field="*{user.fullName.lastName}" class="form-control mt-2" id="lastName"/>
+								<div th:if="${#fields.hasErrors('user.fullName.lastName')}" class="error"
+								     th:errors="*{user.fullName.lastName}"></div>
+							</div>
+						</div>
+
+						<div class="d-flex gap-3">
+							<div class="form-group w-100">
+								<label for="country">Country: <span class="required">*</span></label>
+								<select th:field="*{user.location.country}" class="form-control mt-2" id="country">
+									<option value="" selected="selected">Select Option</option>
+									<option value="Malaysia">Malaysia</option>
+									<option value="Indonesia">Indonesia</option>
+									<option value="Singapore">Singapore</option>
+									<option value="Japan">Japan</option>
+								</select>
+								<div th:if="${#fields.hasErrors('user.location.country')}" class="error"
+								     th:errors="*{user.location.country}"></div>
+							</div>
+
+							<div class="form-group w-100">
+								<label for="city">City: <span class="required">*</span></label>
+								<input th:field="*{user.location.city}" class="form-control mt-2" id="city"/>
+								<div th:if="${#fields.hasErrors('user.location.city')}" class="error"
+								     th:errors="*{user.location.city}"></div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="bio">Bio:</label>
+							<textarea th:field="*{user.bio}" class="form-control textarea" id="bio"></textarea>
+							<div th:if="${#fields.hasErrors('user.bio')}" class="error" th:errors="*{user.bio}"></div>
+						</div>
+
+						<button type="submit" class="btn">Next</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div th:replace="~{fragments/footer}"></div>
+	</body>
+</html>

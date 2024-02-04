@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+	<head>
+		<div th:replace="~{fragments/header}"></div>
+		<title th:text="#{title.login}"/>
+	</head>
+	<body>
+		<div th:replace="~{fragments/userNavbar}"></div>
+
+		<div class="d-flex flex-column align-items-center mt-5" style="min-height: 70vh;">
+			<h3>Edit Profile</h3>
+
+			<form th:action="@{/profile/edit}" method="post" th:object="${user}"
+			      class="d-flex flex-column w-50 mt-4 gap-4">
+
+				<div class="form-group">
+					<input type="hidden" th:field="*{id}"/>
+					<input type="hidden" th:field="*{username}"/>
+					<input type="hidden" th:field="*{password}"/>
+
+					<label for="email">Email: <span class="required">*</span></label>
+					<input th:field="*{email}" class="form-control mt-2" id="email"/>
+					<small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></small>
+				</div>
+
+				<div class="d-flex gap-3">
+					<div class="form-group w-100">
+						<label for="firstName">First Name: <span class="required">*</span></label>
+						<input th:field="*{fullName.firstName}" class="form-control mt-2" id="firstName"/>
+						<small th:if="${#fields.hasErrors('fullName.firstName')}" th:errors="*{fullName.firstName}" class="error"></small>
+					</div>
+
+					<div class="form-group w-100">
+						<label for="lastName">Last Name: <span class="required">*</span></label>
+						<input th:field="*{fullName.lastName}" class="form-control mt-2" id="lastName"/>
+						<small th:if="${#fields.hasErrors('fullName.lastName')}" th:errors="*{fullName.lastName}" class="error"></small>
+					</div>
+				</div>
+
+				<div class="d-flex gap-3">
+					<div class="form-group w-100">
+						<label for="city">City: <span class="required">*</span></label>
+						<input th:field="*{location.city}" class="form-control mt-2" id="city"/>
+						<small th:if="${#fields.hasErrors('location.city')}" th:errors="*{location.city}" class="error"></small>
+					</div>
+
+					<div class="form-group w-100">
+						<label for="country">Country: <span class="required">*</span></label>
+						<select th:field="*{location.country}" class="form-control mt-2" id="country">
+							<option value="" selected="selected">Select Option</option>
+							<option value="Malaysia">Malaysia</option>
+							<option value="Indonesia">Indonesia</option>
+							<option value="Singapore">Singapore</option>
+							<option value="Japan">Japan</option>
+						</select>
+						<small th:if="${#fields.hasErrors('location.country')}" th:errors="*{location.country}" class="error"></small>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="bio">Bio</label>
+					<textarea th:field="*{bio}" class="form-control mt-2" id="bio"></textarea>
+					<small th:if="${#fields.hasErrors('bio')}" th:errors="*{bio}" class="error"></small>
+				</div>
+
+				<div class="d-flex gap-3">
+					<a th:href="@{/profile}" class="btn unfollow">Cancel</a>
+					<button type="submit" class="btn">Save</button>
+				</div>
+			</form>
+		</div>
+
+		<div th:replace="~{fragments/footer}"></div>
+	</body>
+</html>

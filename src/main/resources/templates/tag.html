@@ -31,44 +31,7 @@
         </div>
     </div>
     <div sec:authorize="hasRole('REGULAR')">
-        <div th:each="paper : ${tag.papers}" class="card w-50 my-2">
-            <div class="card-body">
-                <h5 class="card-title"><a th:href="@{/paper/{id}(id=${paper.id})}" th:utext="${paper.title}"></a></h5>
-                <div class="d-flex gap-2">
-                    <p th:utext="${#dates.format(paper.publicationDate, 'MMM yyyy')}"></p>
-                    <p>•</p>
-                    <p>
-                        <a th:href="@{/conference/{id}(id=${paper.conference.id})}"
-                           th:utext="${paper.conference.title}"></a>
-                    </p>
-                    <p>•</p>
-                    <div class="d-flex justify-content-center">
-                        <span class="material-icons">grade</span>
-                        <span th:with="totalRated=${paper.totalRated}, totalRating=${paper.totalRating},
-                                       avgRating=${totalRated > 0 ? totalRating/totalRated : 0}">
-                                    <span th:if="${totalRated eq 0}" th:text="#{message.no.user.rating}"/>
-                                    <span th:if="${totalRated > 1}"
-                                          th:text="${avgRating} + ' (' + ${totalRated} + ' users rated)'"/>
-                                    <span th:if="${totalRated == 1}"
-                                          th:text="${avgRating} + ' (' + ${totalRated} + ' user rated)'"/>
-                        </span>
-                    </div>
-                    <p>•</p>
-                    <div class="d-flex justify-content-center">
-                        <span class="material-icons">download</span>
-                        <span th:text="${paper.downloadCount + ' downloads'}"></span>
-                    </div>
-                </div>
-                <div class="d-flex flex-wrap gap-2">
-                    <a th:each="author : ${paper.authors}" th:href="@{/profile/{id}(id=${author.id})}"
-                       th:utext="${author.email}"></a>
-                </div>
-                <div class="d-flex flex-wrap gap-2 mt-3">
-                    <a th:href="@{/tag/{id}(id=${tag.id})}" th:each="tag : ${paper.tags}" class="badge"
-                       th:utext="'#' + ${tag.name}"></a>
-                </div>
-            </div>
-        </div>
+        <div th:replace="~{fragments/papers :: papers(papers=${tag.papers})}"></div>
     </div>
 </div>
 

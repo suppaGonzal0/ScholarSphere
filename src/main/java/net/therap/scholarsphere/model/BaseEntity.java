@@ -1,9 +1,11 @@
 package net.therap.scholarsphere.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Getter;
+import org.springframework.data.annotation.Version;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -24,7 +26,6 @@ public class BaseEntity implements Serializable {
 	private LocalDateTime updatedOn;
 
 	@Version
-	@NotNull
 	private int version;
 
 	@PrePersist

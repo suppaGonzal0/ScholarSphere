@@ -17,100 +17,95 @@ import java.util.List;
 @Service
 public class PaperService {
 
-    @Autowired
-    private PaperRepository paperRepository;
+	@Autowired
+	private PaperRepository paperRepository;
 
-//    @Autowired
-//    private NotificationService notificationService;
+	@Autowired
+	private NotificationService notificationService;
 
-    public Paper findById(long id) {
-        return paperRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("No paper found with id: " + id));
-    }
+	public Paper findById(long id) {
+		return paperRepository.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("No paper found with id: " + id));
+	}
 
-    @Transactional
-    public void create(Paper paper) {
-        paperRepository.save(paper);
+	@Transactional
+	public void create(Paper paper) {
+		paperRepository.save(paper);
 
-//        notificationService.notifyFollowers(paper.getAuthors());
-    }
+		notificationService.notifyFollowers(paper.getAuthors());
+	}
 
-    public List<Paper> findAll(String sort) {
-        return paperRepository.findAllSorted(sort);
-    }
+	public List<Paper> findAll(String sort) {
+		return paperRepository.findAllSorted(sort);
+	}
 
-    public List<Paper> findAllUnapproved() {
-        return paperRepository.findAllByIsApprovedFalse();
-    }
+	public List<Paper> findAllUnapproved() {
+		return paperRepository.findAllByIsApprovedFalse();
+	}
 
-    public List<Paper> searchByTitle(String title) {
-        return paperRepository.findByTitleContainingIgnoreCase(title);
-    }
+	public List<Paper> searchByTitle(String title) {
+		return paperRepository.findByTitleContainingIgnoreCase(title);
+	}
 
-    public List<Paper> searchByConference(String conferenceTitle) {
-        return paperRepository.findByConferenceTitleContainingIgnoreCase(conferenceTitle);
-    }
+	public List<Paper> searchByConference(String conferenceTitle) {
+		return paperRepository.findByConferenceTitleContainingIgnoreCase(conferenceTitle);
+	}
 
-    public List<Paper> searchByTag(String tagName) {
-        return paperRepository.findByTagsNameContainingIgnoreCase(tagName);
-    }
+	public List<Paper> searchByTag(String tagName) {
+		return paperRepository.findByTagsNameContainingIgnoreCase(tagName);
+	}
 
-    public List<Paper> findAllByConference(long conferenceId) {
-        return paperRepository.findByConferenceIdAndIsApprovedTrue(conferenceId);
-    }
+	public List<Paper> findAllByConference(long conferenceId) {
+		return paperRepository.findByConferenceIdAndIsApprovedTrue(conferenceId);
+	}
 
-    public List<Paper> searchByAuthorEmail(String email) {
-        return paperRepository.findByAuthorsEmailContainingIgnoreCaseAndIsApprovedTrue(email);
-    }
+	public List<Paper> searchByAuthorEmail(String email) {
+		return paperRepository.findByAuthorsEmailContainingIgnoreCaseAndIsApprovedTrue(email);
+	}
 
-    @Transactional
-    public void incrementDownloadCount(Paper paper) {
-        paper.setDownloadCount(paper.getDownloadCount() + 1);
+	@Transactional
+	public void incrementDownloadCount(Paper paper) {
+		paper.setDownloadCount(paper.getDownloadCount() + 1);
 
-        paperRepository.save(paper);
-    }
+		paperRepository.save(paper);
+	}
 
-//    @Transactional
-//    public void approvePaper(String[] approvedPapers) {
-//        for (String id : approvedPapers) {
-//            Paper paper = entityManager.find(Paper.class, Long.parseLong(id));
-//            paper.setApproved(true);
-//
-//            entityManager.merge(paper);
-//
-////            notificationService.notifyForPaper(paper.getId(), Action.APPROVE);
-//        }
-//    }
+	@Transactional
+	public void approvePaper(String[] approvedPapers) {
+		for (String id : approvedPapers) {
+			Paper paper = findById(Long.parseLong(id));
+			paper.setApproved(true);
 
-    @Transactional
-    public void unapprovePaper(String id) {
-//        Paper paper = entityManager.find(Paper.class, Long.parseLong(id));
-//
-////        notificationService.notifyForPaper(paper.getId(), Action.UNAPPROVE);
-//
-//        entityManager.remove(paper);
-    }
+			paperRepository.save(paper);
 
-    public boolean isSaved(Long userId, Long paperId) {
-        return paperRepository.countSavedPapers(userId, paperId) > 0;
-    }
+			notificationService.notifyForPaper(paper, Action.APPROVE);
+		}
+	}
 
-    public List<Paper> findSavedPapers(long id) {
-        return paperRepository.findSavedPapersByUserId(id);
-    }
+	@Transactional
+	public void unapprovePaper(String id) {
+        Paper paper = findById(Long.parseLong(id));
 
-    @Transactional
-    public void saveOrUnsavePaper(long userId, long paperId, String action) {
-        Action actionType = Action.valueOf(action.toUpperCase());
+        notificationService.notifyForPaper(paper, Action.UNAPPROVE);
 
-        switch (actionType) {
-            case SAVE:
-                paperRepository.savePaper(userId, paperId);
-                break;
+        paperRepository.delete(paper);
+	}
 
-            case UNSAVE:
-                paperRepository.unsavePaper(userId, paperId);
-                break;
-        }
-    }
+	public boolean isSaved(Long userId, Long paperId) {
+		return paperRepository.countSavedPapers(userId, paperId) > 0;
+	}
+
+	public List<Paper> findSavedPapers(long id) {
+		return paperRepository.findSavedPapersByUserId(id);
+	}
+
+	@Transactional
+	public void saveOrUnsavePaper(long userId, long paperId, String action) {
+		Action actionType = Action.valueOf(action.toUpperCase());
+
+		switch (actionType) {
+			case SAVE -> paperRepository.savePaper(userId, paperId);
+			case UNSAVE -> paperRepository.unsavePaper(userId, paperId);
+		}
+	}
 }

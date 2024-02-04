@@ -37,23 +37,6 @@ public class ConferenceController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-//    @GetMapping(SEARCH_PATH)
-//    @ResponseBody
-//    public List<Map<String, Object>> searchByTitle(@RequestParam String title, HttpSession session) {
-//        checkAccess(session, Role.REGULAR);
-//
-//        return conferenceService.searchByTitle(title)
-//                .stream()
-//                .map(conference -> {
-//                    Map<String, Object> papers = new HashMap<>();
-//                    papers.put("id", conference.getId());
-//                    papers.put("title", conference.getTitle());
-//
-//                    return papers;
-//                })
-//                .collect(Collectors.toList());
-//    }
-
     @GetMapping
     public String showConferenceCreatePage(Model model) {
         model.addAttribute("conference", new Conference());

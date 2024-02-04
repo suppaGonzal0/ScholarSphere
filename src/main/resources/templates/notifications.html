@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+	<head>
+		<div th:replace="~{fragments/header}"></div>
+		<title>Notifications</title>
+	</head>
+	<body>
+		<div th:replace="~{fragments/userNavbar}"></div>
+
+		<div class="d-flex flex-column align-items-center mt-5" style="min-height: 70vh;">
+			<h3>Notifications</h3>
+
+			<div th:switch="${#lists.isEmpty(notifications)}">
+				<div th:case="false">
+					<form action="/notification" method="post" class="w-50 mt-4 d-flex justify-content-end">
+						<button type="submit" class="btn" style="width: 200px">Mark As Read</button>
+					</form>
+					<div th:each="notification : ${notifications}" class="card p-3 my-2 w-50" th:text="${notification.message}"></div>
+				</div>
+				<div th:case="true">
+					<div class="card p-5 my-5">
+						<h4 class="d-flex align-items-center gap-2">
+							<span class="material-icons">notifications</span>
+							No notifications to show
+						</h4>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div th:replace="~{fragments/footer}"></div>
+	</body>
+</html>
