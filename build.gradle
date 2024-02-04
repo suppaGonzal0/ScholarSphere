@@ -37,6 +37,11 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
+    implementation 'commons-fileupload:commons-fileupload:1.4'
+
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'

@@ -19,9 +19,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "notification")
 @NoArgsConstructor
-@NamedQueries({
-		@NamedQuery(name = "Notification.findAll", query = "SELECT n FROM Notification n WHERE n.receiver.id = :id")
-})
 public class Notification extends BaseEntity {
 
 	@Serial

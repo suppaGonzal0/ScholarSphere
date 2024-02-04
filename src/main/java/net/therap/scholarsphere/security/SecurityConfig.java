@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,68 +25,65 @@ import javax.sql.DataSource;
 @Slf4j
 public class SecurityConfig {
 
-    private static final String[] PERMIT_ALL_PATHS = {"/css/**", "/js/**", "/images/**", "/", "/terms", "/privacy", "/ethics"};
-    private static final String[] ADMIN_PATHS = {"/tag", "/conference"};
-    private static final String[] REGULAR_USER_PATHS = {"/profile/**"};
-    private static final String[] ALL_USER_PATHS = {"/tag/{id}", "/conference/{id}"};
+	private static final String[] PERMIT_ALL_PATHS = {"/css/**", "/js/**", "/images/**", "/", "/terms", "/privacy",
+			"/ethics", "/register/**"};
+	private static final String[] ADMIN_PATHS = {"/tag", "/conference", "/pending-approvals/**"};
+	private static final String[] REGULAR_USER_PATHS = {"/paper/**", "/profile/**", "/sort", "/search", "/notification",
+			"/comment/**", "/conference-search"};
+	private static final String[] ALL_USER_PATHS = {"/tag/{id}", "/conference/{id}", "/paper-download"};
 
-    @Autowired
-    HttpSession session;
+	@Autowired
+	HttpSession session;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    public UserDetailsManager userDetailsManager(DataSource dataSource) {
+	@Bean
+	public UserDetailsManager userDetailsManager(DataSource dataSource) {
 
-        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+		JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
 
-        jdbcUserDetailsManager.setUsersByUsernameQuery("select email, password, enabled from users where email=?");
+		jdbcUserDetailsManager.setUsersByUsernameQuery("select email, password, enabled from users where email=?");
 
-        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("select email, authority from authorities where email=?");
+		jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("select email, authority from authorities where email=?");
 
-        return jdbcUserDetailsManager;
-    }
+		return jdbcUserDetailsManager;
+	}
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-                .authorizeHttpRequests(configurer ->
-                        configurer
-                                .requestMatchers(PERMIT_ALL_PATHS).permitAll()
-                                .requestMatchers(ADMIN_PATHS).hasRole("ADMIN")
-                                .requestMatchers(REGULAR_USER_PATHS).hasRole("REGULAR")
-                                .requestMatchers(ALL_USER_PATHS).hasAnyRole("ADMIN", "REGULAR")
-                                .anyRequest()
-                                .authenticated()
-                )
-                .formLogin(form ->
-                        form
-                                .loginPage("/login")
-                                .usernameParameter("email")
-                                .passwordParameter("password")
-                                .loginProcessingUrl("/authenticate")
-                                .permitAll()
-                                .successHandler(
-                                        (request, response, authentication) -> {
-                                            User user = ((User) authentication.getPrincipal());
+		http.csrf(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests(configurer ->
+						configurer.requestMatchers(PERMIT_ALL_PATHS).permitAll()
+								.requestMatchers(ADMIN_PATHS).hasRole("ADMIN")
+								.requestMatchers(REGULAR_USER_PATHS).hasRole("REGULAR")
+								.requestMatchers(ALL_USER_PATHS).hasAnyRole("ADMIN", "REGULAR")
+								.anyRequest()
+								.authenticated()
+				)
+				.formLogin(form ->
+						form.loginPage("/login")
+								.usernameParameter("email")
+								.passwordParameter("password")
+								.loginProcessingUrl("/authenticate")
+								.permitAll()
+								.successHandler((request, response, authentication) -> {
+											User user = ((User) authentication.getPrincipal());
 
-                                            session.setAttribute("user", user);
+											session.setAttribute("user", user);
 
-                                            response.sendRedirect("/");
-                                        })
-                                .failureForwardUrl("/login")
-                )
-                .logout(
-                        LogoutConfigurer::permitAll
-                )
-                .exceptionHandling(configurer ->
-                        configurer.accessDeniedPage("/access-denied")
-                );
+											response.sendRedirect("/");
+										}
+								)
+								.failureForwardUrl("/login"))
+				.logout(LogoutConfigurer::permitAll)
+				.exceptionHandling(configurer ->
+						configurer.accessDeniedPage("/access-denied")
+				);
 
-        return http.build();
-    }
+		return http.build();
+	}
 }

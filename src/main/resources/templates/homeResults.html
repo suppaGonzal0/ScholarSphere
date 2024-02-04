@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+	<head>
+		<div th:replace="~{fragments/header}"></div>
+		<title th:text="#{title.home}"/>
+	</head>
+	<body>
+		<div th:replace="~{fragments/userNavbar}"></div>
+
+		<div class="d-flex flex-column align-items-center mt-5" style="min-height: 70vh;">
+
+			<form th:action="@{/search}" method="get" th:object="${searchCommand}" class="input-group mb-3 w-50 mt-4">
+				<div class="input-group-prepend">
+					<select th:field="*{searchBy}" class="form-select" aria-label="Default select example">
+						<option value="author" th:text="#{search.option.author}"/>
+						<option value="conference" th:text="#{search.option.conference}"/>
+						<option value="tag" th:text="#{search.option.tag}"/>
+						<option value="title" th:text="#{search.option.title}"/>
+					</select>
+				</div>
+				<input th:field="*{searchTerm}" type="text" class="form-control" aria-label="search"/>
+				<div class="input-group-append">
+					<button type="submit" class="btn d-flex align-items-center gap-1">
+						<span class="material-icons">search</span>
+						<span>Search</span>
+					</button>
+				</div>
+
+				<div class="dropdown ms-2">
+					<button class="btn d-flex align-items-center gap-1 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<span class="material-icons">sort</span>
+						<span>Sort by</span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a class="dropdown-item" th:href="@{/sort(sortBy=publish_date)}">Publish Date</a></li>
+						<li><a class="dropdown-item" th:href="@{/sort(sortBy=downloads)}">Downloads</a></li>
+						<li><a class="dropdown-item" th:href="@{/sort(sortBy=rating)}">Rating</a></li>
+					</ul>
+				</div>
+			</form>
+
+			<div th:replace="~{fragments/papers :: papers(papers=${papers})}"></div>
+		</div>
+
+		<div th:replace="~{fragments/footer}"></div>
+	</body>
+</html>

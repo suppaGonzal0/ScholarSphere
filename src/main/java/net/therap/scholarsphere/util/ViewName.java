@@ -30,6 +30,4 @@ public class ViewName {
 	public static final String FOLLOWERS_PAGE = "followers";
 	public static final String FOLLOWINGS_PAGE = "followings";
 	public static final String SAVED_PAPERS_PAGE = "saved";
-	public static final String ALERT_PAGE = "alert";
-
 }

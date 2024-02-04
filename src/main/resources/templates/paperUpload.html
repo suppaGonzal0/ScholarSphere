@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+	<head>
+		<div th:replace="~{fragments/header}"></div>
+		<title>Title</title>
+	</head>
+	<body>
+		<div th:replace="~{fragments/userNavbar}"></div>
+
+		<div class="d-flex flex-column align-items-center mt-5">
+			<h3>Upload Your Research</h3>
+
+			<form th:action="@{/paper/upload}" method="post" th:object="${paper}" style="min-height: 70vh;"
+			      class="card d-flex flex-column gap-4 p-5 mt-4" enctype="multipart/form-data">
+
+				<div class="form-group">
+					<label for="title">Paper Title: <span class="required">*</span></label>
+					<input th:field="*{title}" class="form-control" id="title"/>
+					<div th:if="${#fields.hasErrors('title')}" class="error" th:errors="*{title}"></div>
+				</div>
+
+				<div class="form-group">
+					<label for="abstract">Abstract: <span class="required">*</span></label>
+					<textarea th:field="*{summary}" class="form-control textarea" id="abstract"></textarea>
+					<div th:if="${#fields.hasErrors('summary')}" class="error" th:errors="*{summary}"></div>
+				</div>
+
+				<div class="d-flex gap-3">
+					<div class="form-group">
+						<label for="pdf">PDF: <span class="required">*</span></label>
+						<input th:field="*{pdf}" type="file" class="form-control" accept=".pdf" id="pdf"/>
+						<div th:if="${#fields.hasErrors('pdf')}" class="error" th:errors="*{pdf}"></div>
+					</div>
+
+					<div class="form-group">
+						<label for="date">Publication Date: <span class="required">*</span></label>
+						<input th:field="*{publicationDate}" class="form-control" id="date" placeholder="dd/MM/yy"/>
+						<div th:if="${#fields.hasErrors('publicationDate')}" class="error" th:errors="*{publicationDate}"></div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="conference">Conference Title: <span class="required">*</span></label>
+					<input class="form-control" id="conference" autocomplete="off" oninput="search(this.value)"/>
+					<input th:field="*{conference}" type="hidden" id="conferenceValue"/>
+					<div id="conferenceList"></div>
+					<div th:if="${#fields.hasErrors('conference')}" class="error" th:errors="*{conference}"></div>
+				</div>
+
+				<div class="d-flex gap-3">
+					<div class="form-group w-100">
+						<label>Authors: <span class="required">*</span></label>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="authorsDropdown"
+							        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Select Authors
+							</button>
+							<div class="dropdown-menu" aria-labelledby="authorsDropdown">
+								<div th:each="author : ${authors}">
+									<input type="checkbox" th:field="*{authors}" th:value="${author.id}" id="${'author-' + author.id}"/>
+									<label th:for="${'author-' + author.id}" th:text="${author.email}"></label><br/>
+								</div>
+							</div>
+						</div>
+						<div th:if="${#fields.hasErrors('authors')}" class="error" th:errors="*{authors}"></div>
+					</div>
+
+					<div class="form-group w-75">
+						<label>Tags:</label>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="tagsDropdown"
+							        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Select Tags
+							</button>
+							<div class="dropdown-menu" aria-labelledby="tagsDropdown">
+								<div th:each="tag : ${tags}">
+									<input type="checkbox" th:field="*{tags}" th:value="${tag.id}" id="${'tag-' + tag.id}"/>
+									<label th:for="${'tag-' + tag.id}" th:text="${tag.name}"></label><br/>
+								</div>
+							</div>
+						</div>
+						<div th:if="${#fields.hasErrors('tags')}" class="error" th:errors="*{tags}"></div>
+					</div>
+				</div>
+
+				<div class="d-flex justify-content-center align-items-center mt-3 gap-3">
+					<a th:href="@{/paper/cancel}" class="btn unfollow">Cancel</a>
+					<button type="submit" class="btn">Submit</button>
+				</div>
+			</form>
+		</div>
+
+		<div th:replace="~{fragments/footer}"></div>
+	</body>
+</html>

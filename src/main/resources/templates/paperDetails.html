@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+	<head>
+		<div th:replace="~{fragments/header}"></div>
+		<title>Paper Details</title>
+	</head>
+	<body>
+		<div th:replace="~{fragments/userNavbar}"></div>
+
+		<div class="d-flex flex-column align-items-center mt-5">
+			<div class="w-50">
+				<h3 th:text="${paper.title}"></h3>
+				<hr/>
+				<div class="d-flex flex-wrap gap-2">
+					<b>Authors:</b>
+					<a th:each="author : ${paper.authors}" th:href="@{/profile/{id}(id=${author.id})}"
+					   th:text="${author.email}"></a>
+				</div>
+				<hr/>
+				<div class="d-flex flex-wrap gap-2">
+					<b>Tags:</b>
+					<a th:each="tag : ${paper.tags}" th:href="@{/tag/{id}(id=${tag.id})}">#<span
+							th:text="${tag.name}"></span></a>
+				</div>
+				<hr/>
+				<p class="m-0" th:text="${paper.conference.title + ' • ' + paper.conference.location.city + ', ' + paper.conference.location.country}"></p>
+
+				<hr/>
+				<div class="d-flex align-items-center">
+					<p class="flex-grow-1 m-0">
+						<b>Published:</b>
+						<span th:text="${#dates.format(paper.publicationDate, 'MMMM yyyy')}"></span>
+					</p>
+					<a class="btn btn-sm w-auto d-flex align-items-center gap-1"
+					   th:href="@{/paper/{id}/download(id=${paper.id})}">
+						<span class="material-icons">picture_as_pdf</span>
+						<span>PDF</span>
+					</a>
+				</div>
+				<hr/>
+				<h5>Abstract</h5>
+				<p th:text="${paper.summary}"></p>
+				<hr/>
+				<div class="d-flex align-items-center">
+					<div class="rating flex-grow-1 m-0">
+						<div th:switch="${userRating}">
+							<div th:case="0">
+								<form th:action="@{/paper/rate/{id}(id=${paper.id})}" method="post"
+								      class="d-flex gap-2">
+									<select name="rate" class="form-select" aria-label="select" style="width: 100px">
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+									</select>
+									<button class="btn" type="submit" style="width: 80px">Rate</button>
+								</form>
+							</div>
+							<div th:case="*">
+								<div id="currentRating">
+<!--									<p class="m-0" th:text="'You have rated this paper ' + ${userRating} + '/5'"></p>-->
+									<form th:action="@{/paper/rate/undo}" method="post">
+										<input hidden="hidden" type="number" name="paperId" th:value="${paper.id}"/>
+										<div class="d-flex gap-2">
+											<button type="submit" style="width: 80px" class="btn btn-sm unfollow">undo
+											</button>
+											<button type="button" style="width: 80px" class="btn btn-sm"
+											        onclick="showRatingForm()">change
+											</button>
+										</div>
+									</form>
+								</div>
+								<div id="ratingSelectForm" style="display: none;">
+									<form th:action="@{/paper/rate/change}" method="post" class="d-flex gap-2">
+										<input hidden="hidden" type="number" name="paperId" th:value="${paper.id}"/>
+										<select name="rate" class="form-select" style="width: 100px"
+										        aria-label="select">
+											<option value="1">1</option>
+											<option value="2">2</option>
+											<option value="3">3</option>
+											<option value="4">4</option>
+											<option value="5">5</option>
+										</select>
+										<button type="submit" style="width: 80px" class="btn">update</button>
+										<button type="button" style="width: 80px" onclick="cancelUpdateRating()"
+										        class="btn unfollow">cancel
+										</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="saved">
+						<div th:switch="${isSaved}">
+							<div th:case="true">
+								<form th:action="@{/paper/save_or_unsave(action='unsave')}" method="post">
+									<input hidden="hidden" value="${paper.id}" name="paperId"/>
+									<button class="btn unfollow" style="width: 80px" type="submit">unsave</button>
+								</form>
+							</div>
+							<div th:case="false">
+								<form th:action="@{/paper/save_or_unsave(action='save')}" method="post">
+									<input hidden="hidden" value="${paper.id}" name="paperId"/>
+									<button class="btn" style="width: 80px" type="submit">save</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr/>
+				<div class="d-flex align-items-center">
+					<div class="flex-grow-1 m-0">
+						<h5>Comments</h5>
+					</div>
+					<div class="d-flex gap-2">
+						<a th:href="@{/paper(sort='top', id=${paper.id})}">Top</a>
+						<a th:href="@{/paper(sort='newest', id=${paper.id})}">Newest</a>
+						<a th:href="@{/paper(sort='oldest', id=${paper.id})}">Oldest</a>
+					</div>
+				</div>
+
+				<div>
+					<form th:action="@{/comment}" method="post" th:object="${comment}" class="mt-4">
+						<div class="form-group">
+                        <textarea class="form-control textarea" style="height: 5em" th:field="*{text}" id="commentText"
+                                  oninput="toggleCommentButton(this.value)" aria-label="comment"></textarea>
+							<p class="error" th:if="${#fields.hasErrors('text')}" th:errors="*{text}"></p>
+						</div>
+						<input type="hidden" th:field="*{paper.id}" th:value="${paper.id}"/>
+						<div class="d-flex mt-3 gap-3">
+							<button type="button" class="btn unfollow" id="cancelButton" disabled
+							        onclick="cancelComment()">Cancel
+							</button>
+							<button type="submit" class="btn" id="commentButton" disabled>Comment</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="w-50">
+				<div th:each="comment : ${comments}" class="card p-3 w-100 my-3">
+					<div class="d-flex">
+						<div class="d-flex flex-grow-1 m-0">
+							<b>
+								<a th:href="@{/profile/{id}(id=${comment.user.id})}"
+								   th:text="${comment.user.fullName}"></a>
+							</b>
+						</div>
+						<div>
+							<p th:text="${#temporals.format(comment.createdOn, 'hh:mm a, dd MMM, yyyy')}"></p>
+						</div>
+					</div>
+					<p class="mt-2" th:text="${comment.text}"/>
+					<div class="d-flex align-items-center gap-3">
+						<p th:text="${#strings.length(comment.likedByUsers)} + ' Likes'"/>
+						<div th:switch="${comment.likedByUsers.contains(user)}">
+							<div th:case="true">
+								<form th:action="@{/comment/unlike}" method="post">
+									<input hidden="hidden" th:value="${user.id}" name="userId"/>
+									<input hidden="hidden" th:value="${comment.id}" name="commentId"/>
+									<input hidden="hidden" th:value="${paper.id}" name="paperId"/>
+									<button type="submit" class="btn unfollow" style="width: 80px">unlike</button>
+								</form>
+							</div>
+							<div th:case="false">
+								<form th:action="@{/comment/like}" method="post">
+									<input hidden="hidden" th:value="${user.id}" name="userId"/>
+									<input hidden="hidden" th:value="${comment.id}" name="commentId"/>
+									<input hidden="hidden" th:value="${paper.id}" name="paperId"/>
+									<button type="submit" class="btn" style="width: 80px">like</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div th:replace="~{fragments/footer}"></div>
+	</body>
+</html>

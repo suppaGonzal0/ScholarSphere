@@ -13,7 +13,8 @@
 				<form action="/pending-approvals" method="post">
 					<th:block th:each="paper : ${papers}">
 						<div class="accordion d-flex gap-3 mt-3">
-							<input type="checkbox" name="approvedPapers" th:value="${paper.id}" style="transform: scale(1.5); margin-right: 5px;">
+							<input aria-label="approve" type="checkbox" name="approvedPapers" th:value="${paper.id}"
+							       style="transform: scale(1.5); margin-right: 5px;">
 							<div class="accordion-item" style="width: 700px">
 								<h2 class="accordion-header" th:id="'heading' + ${paper.id}">
 									<div class="accordion-button d-flex gap-2 collapsed" type="button"
@@ -23,12 +24,11 @@
 									</div>
 								</h2>
 								<div th:id="'collapse' + ${paper.id}" class="accordion-collapse collapse"
-								     aria-labelledby="'heading' + ${paper.id}"
-								     th:data-bs-parent="#accordionExample">
+								     aria-labelledby="'heading' + ${paper.id}" data-bs-parent="#accordionExample">
 									<div class="accordion-body">
 										<div class="d-flex gap-2">
 											<div class="d-flex gap-2 flex-grow-1 m-0">
-												<p th:text="${#dates.format(paper.publicationDate, 'MMM yyyy')}" />
+												<p th:text="${#dates.format(paper.publicationDate, 'MMM yyyy')}"/>
 												<p>•</p>
 												<p>
 													<a th:href="@{/conference/{id}(id=${paper.conference.id})}">
@@ -37,7 +37,7 @@
 												</p>
 											</div>
 											<a class="btn btn-sm" style="width: 50px"
-											   th:href="@{/download/{id}(id=${paper.id})}">
+											   th:href="@{/paper-download/{id}(id=${paper.id})}">
 												<span class="material-icons">download</span>
 											</a>
 										</div>
@@ -57,7 +57,8 @@
 									</div>
 								</div>
 							</div>
-							<a th:href="@{/pending-approvals/unapprove{id}(id=${paper.id})}" class="btn unfollow" style="width: 50px; height: 40px">
+							<a th:href="@{/pending-approvals/unapprove(id=${paper.id})}" class="btn unfollow"
+							   style="width: 50px; height: 40px">
 								<span class="material-icons">delete</span>
 							</a>
 						</div>
