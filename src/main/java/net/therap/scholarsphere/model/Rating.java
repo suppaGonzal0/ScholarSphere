@@ -21,10 +21,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "rating")
 @NoArgsConstructor
-@NamedQueries({
-		@NamedQuery(name = "Rating.findRating",
-				query = "SELECT r FROM Rating r WHERE r.user = :user AND r.paper = :paper")
-})
 public class Rating extends BaseEntity {
 
 	@Serial

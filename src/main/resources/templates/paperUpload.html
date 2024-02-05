@@ -51,7 +51,7 @@
 					<div class="form-group w-100">
 						<label>Authors: <span class="required">*</span></label>
 						<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" type="button" id="authorsDropdown"
+							<button class="btn btn-secondary w-100 dropdown-toggle" type="button" id="authorsDropdown"
 							        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								Select Authors
 							</button>
@@ -65,10 +65,10 @@
 						<div th:if="${#fields.hasErrors('authors')}" class="error" th:errors="*{authors}"></div>
 					</div>
 
-					<div class="form-group w-75">
+					<div class="form-group w-100">
 						<label>Tags:</label>
 						<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" type="button" id="tagsDropdown"
+							<button class="btn btn-secondary w-100 dropdown-toggle" type="button" id="tagsDropdown"
 							        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								Select Tags
 							</button>
@@ -84,8 +84,8 @@
 				</div>
 
 				<div class="d-flex justify-content-center align-items-center mt-3 gap-3">
-					<a th:href="@{/paper/cancel}" class="btn unfollow">Cancel</a>
-					<button type="submit" class="btn">Submit</button>
+					<a th:href="@{/paper/cancel}" class="btn w-100 unfollow">Cancel</a>
+					<button type="submit" class="btn w-100">Submit</button>
 				</div>
 			</form>
 		</div>

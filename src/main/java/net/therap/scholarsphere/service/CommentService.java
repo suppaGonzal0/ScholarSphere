@@ -1,7 +1,9 @@
 package net.therap.scholarsphere.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import net.therap.scholarsphere.enums.Action;
 import net.therap.scholarsphere.model.Comment;
+import net.therap.scholarsphere.model.Paper;
 import net.therap.scholarsphere.model.User;
 import net.therap.scholarsphere.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,53 +21,58 @@ import static net.therap.scholarsphere.enums.Action.COMMENT;
 @Service
 public class CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
+	@Autowired
+	private CommentRepository commentRepository;
 
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-    @Autowired
-    private NotificationService notificationService;
+	@Autowired
+	private PaperService paperService;
 
-    @Transactional
-    public void save(Comment comment, User user) {
-        comment.setUser(user);
+	@Autowired
+	private NotificationService notificationService;
 
-        commentRepository.save(comment);
+	@Transactional
+	public void save(Comment comment, User user) {
+		Paper paper = paperService.findById(comment.getPaper().getId());
+		comment.setPaper(paper);
+		comment.setUser(user);
 
-        notificationService.notifyForPaper(comment.getPaper(), COMMENT);
-    }
+		commentRepository.save(comment);
 
-    @Transactional
-    public List<Comment> findAll(long id, String sort) {
-        return commentRepository.findAllComments(id, sort);
-    }
+		notificationService.notifyForPaper(comment.getPaper(), COMMENT);
+	}
 
-    public Comment findById(long id) {
-        return commentRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("No comment found with id: " + id));
-    }
+	@Transactional
+	public List<Comment> findAll(long id, String sort) {
+		return commentRepository.findAllComments(id, sort);
+	}
 
-    @Transactional
-    public void addLike(long userId, long commentId) {
-        User user = userService.findById(userId);
-        Comment comment = findById(commentId);
+	public Comment findById(long id) {
+		return commentRepository.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("No comment found with id: " + id));
+	}
 
-        comment.getLikedByUsers().add(user);
+	@Transactional
+	public void addLike(long userId, long commentId) {
+		User user = userService.findById(userId);
+		Comment comment = findById(commentId);
 
-        commentRepository.save(comment);
+		comment.getLikedByUsers().add(user);
 
-        notificationService.notifyForLike(user, comment);
-    }
+		commentRepository.save(comment);
 
-    @Transactional
-    public void unlike(long userId, long commentId) {
-        User user = userService.findById(userId);
-        Comment comment = findById(commentId);
+		notificationService.notifyForLike(user, comment);
+	}
 
-        comment.getLikedByUsers().remove(user);
+	@Transactional
+	public void unlike(long userId, long commentId) {
+		User user = userService.findById(userId);
+		Comment comment = findById(commentId);
 
-        commentRepository.save(comment);
-    }
+		comment.getLikedByUsers().remove(user);
+
+		commentRepository.save(comment);
+	}
 }

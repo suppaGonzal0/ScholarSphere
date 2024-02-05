@@ -1,56 +1,56 @@
-<div class="papers" th:fragment="papers(papers)">
-	<div th:if="${not #lists.isEmpty(papers)}" class="d-flex flex-column align-items-center">
-		<div th:each="paper : ${papers}" class="card w-75 my-2">
-			<div class="card-body">
-				<h5 class="card-title">
-					<a th:href="@{/paper/{paperId}(paperId=${paper.id})}" th:text="${paper.title}"></a>
-				</h5>
+<div class="papers w-50" th:fragment="papers(papers)">
+    <div th:if="${not #lists.isEmpty(papers)}" class="d-flex flex-column align-items-center">
+        <div th:each="paper : ${papers}" class="card w-100 my-2">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a th:href="@{/paper/{paperId}(paperId=${paper.id})}" th:text="${paper.title}"></a>
+                </h5>
 
-				<div class="d-flex gap-2">
-					<p th:text="${#dates.format(paper.publicationDate, 'MMM yyyy')}"></p>
-					<p>•</p>
-					<p>
-						<a th:href="@{/conference/{conferenceId}(conferenceId=${paper.conference.id})}"
-						   th:text="${paper.conference.title}"></a>
-					</p>
-					<p>•</p>
-					<div class="d-flex justify-content-center">
-						<span class="material-icons">grade</span>
-						<span th:if="${paper.totalRated > 0}"
-						      th:utext="${#numbers.formatDecimal(paper.totalRating/paper.totalRated, 1, 1)}">
-								</span>
-						<span th:if="${paper.totalRated > 1}"
-						      th:text="'(' + ${paper.totalRated} + ' users rated)'"></span>
-						<span th:if="${paper.totalRated == 1}"
-						      th:text="'(' + ${paper.totalRated} + ' user rated)'"></span>
-						<span th:if="${paper.totalRated == 0}">No user ratings</span>
-					</div>
-					<p>•</p>
-					<div class="d-flex justify-content-center">
-						<span class="material-icons">download</span>
-						<span th:text="${paper.downloadCount} + ' downloads'"></span>
-					</div>
-				</div>
+                <div class="d-flex gap-2">
+                    <p th:text="${#dates.format(paper.publicationDate, 'MMM yyyy')}"></p>
+                    <p>•</p>
+                    <p>
+                        <a th:href="@{/conference/{conferenceId}(conferenceId=${paper.conference.id})}"
+                           th:text="${paper.conference.title}"></a>
+                    </p>
+                    <p>•</p>
+                    <div class="d-flex justify-content-center">
+                        <span class="material-icons">grade</span>
+                        <span th:if="${paper.totalRated > 0}"
+                              th:utext="${#numbers.formatDecimal(paper.totalRating/paper.totalRated, 1, 1)}">
+                        </span>
+                        <span th:if="${paper.totalRated > 1}"
+                              th:text="'(' + ${paper.totalRated} + ' users rated)'"></span>
+                        <span th:if="${paper.totalRated == 1}"
+                              th:text="'(' + ${paper.totalRated} + ' user rated)'"></span>
+                        <span th:if="${paper.totalRated == 0}">No user ratings</span>
+                    </div>
+                    <p>•</p>
+                    <div class="d-flex justify-content-center">
+                        <span class="material-icons">download</span>
+                        <span th:text="${paper.downloadCount} + ' downloads'"></span>
+                    </div>
+                </div>
 
-				<div class="d-flex flex-wrap gap-2">
-					<a th:each="author : ${paper.authors}"
-					   th:href="@{/profile(id=${author.id})}"
-					   th:text="${author.email}"></a>
-				</div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a th:each="author : ${paper.authors}"
+                       th:href="@{/profile(id=${author.id})}"
+                       th:text="${author.email}"></a>
+                </div>
 
-				<div class="d-flex flex-wrap gap-2 mt-3">
-					<a th:each="tag : ${paper.tags}" th:href="@{/tag/{tagId}(tagId=${tag.id})}"
-					   class="badge" th:text="'#' + ${tag.name}"></a>
-				</div>
-			</div>
-		</div>
-	</div>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <a th:each="tag : ${paper.tags}" th:href="@{/tag/{tagId}(tagId=${tag.id})}"
+                       class="badge" th:text="'#' + ${tag.name}"></a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<div th:if="${#lists.isEmpty(papers)}">
-		<div class="card p-5 my-5">
-			<h5 class="d-flex align-items-center gap-2">
-				No papers to show.
-			</h5>
-		</div>
-	</div>
+    <div th:if="${#lists.isEmpty(papers)}">
+        <div class="card p-5 my-5">
+            <h5 class="d-flex align-items-center gap-2">
+                No papers to show.
+            </h5>
+        </div>
+    </div>
 </div>

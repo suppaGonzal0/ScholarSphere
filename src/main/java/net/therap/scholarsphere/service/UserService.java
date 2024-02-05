@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static net.therap.scholarsphere.enums.Action.CREATE;
+import static net.therap.scholarsphere.enums.Status.ENABLED;
 import static net.therap.scholarsphere.util.Util.hashPassword;
 
 /**
@@ -30,6 +31,10 @@ public class UserService {
 	public void saveOrUpdate(User user, Action action) {
 		if (CREATE.equals(action)) {
 			hashPassword(user);
+
+			user.setEnabled(ENABLED.getValue());
+			
+			userRepository.createRegularRole(user.getEmail());
 		}
 
 		userRepository.save(user);

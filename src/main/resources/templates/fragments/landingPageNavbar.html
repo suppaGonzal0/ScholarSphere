@@ -1,10 +1,15 @@
-<nav class="navbar sticky-top navbar-expand-lg" style="background-color: #fff;">
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
 	<a class="navbar-brand ms-5" style="color: #213555;">
 		<h3 th:text="#{nav.brand}"></h3>
 	</a>
 
-	<div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNavAltMarkup">
-		<div class="navbar-nav me-5">
+	<button class="navbar-toggler me-5" type="button" data-toggle="collapse" data-target="#navbarNav"
+			aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse md-d-flex md-justify-content-end" id="navbarNav">
+		<div class="navbar-nav me-5 ms-auto">
 			<a class="nav-item nav-link" style="color: #213555;" th:href="@{/login}">
 				<b th:text="#{nav.login}"></b>
 			</a>

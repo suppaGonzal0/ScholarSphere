@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import net.therap.scholarsphere.model.embedded.Pdf;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,6 +22,7 @@ import java.util.*;
 @Getter
 @Setter
 @Table(name = "paper")
+@ToString
 public class Paper extends BaseEntity {
 
 	@Serial
