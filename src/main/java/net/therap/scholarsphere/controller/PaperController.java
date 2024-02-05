@@ -1,16 +1,12 @@
 package net.therap.scholarsphere.controller;
 
-/*
- * @author mehzabinaothoi
- * @since 1/30/24
- */
-
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import net.therap.scholarsphere.editor.ConferenceEditor;
 import net.therap.scholarsphere.editor.TagEditor;
 import net.therap.scholarsphere.editor.UserEditor;
+import net.therap.scholarsphere.enums.Action;
 import net.therap.scholarsphere.model.*;
 import net.therap.scholarsphere.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static net.therap.scholarsphere.enums.Action.CREATE;
 import static net.therap.scholarsphere.util.ViewName.PAPER_DETAILS_PAGE;
 import static net.therap.scholarsphere.util.ViewName.PAPER_UPLOAD_PAGE;
 
@@ -99,7 +96,7 @@ public class PaperController {
 			return PAPER_UPLOAD_PAGE;
 		}
 
-		paperService.create(paper);
+		paperService.saveOrUpdate(paper, CREATE);
 
 		return "redirect:/paper/upload";
 	}
@@ -111,6 +108,8 @@ public class PaperController {
 	                                   @RequestParam(name = "sort", defaultValue = "newest") String sort) {
 
 		Paper paper = paperService.findById(id);
+		Comment comment = new Comment();
+		comment.setPaper(paper);
 
 		if (isNull(paper) || !paper.isApproved()) {
 			throw new EntityNotFoundException("No paper found with id: " + id);
@@ -119,67 +118,66 @@ public class PaperController {
 		UserDetails sessionUser = (UserDetails) session.getAttribute("user");
 		User user = userService.findByEmail(sessionUser.getUsername());
 
-//		Rating rating = ratingService.findRating(user, paper);
+		Rating rating = ratingService.findRating(user, paper);
 
-//		model.addAttribute("userRating", isNull(rating) ? 0 : rating.getRating());
+		model.addAttribute("userRating", isNull(rating) ? 0 : rating.getRating());
 		model.addAttribute("isSaved", paperService.isSaved(user.getId(), paper.getId()));
 		model.addAttribute("paper", paper);
 		model.addAttribute("user", user);
-		model.addAttribute("comment", new Comment());
+		model.addAttribute("comment", comment);
 		model.addAttribute("comments", commentService.findAll(paper.getId(), sort));
 
 		return PAPER_DETAILS_PAGE;
 	}
 
-//	@PostMapping(RATE_PATH)
-//	public String processRating(@PathVariable long paperId,
-//	                            @RequestParam int rate,
-//	                            HttpSession session) {
-//
-//		checkAccess(session, Role.REGULAR);
-//
-//		long userId = (long) session.getAttribute(ID_ATTR);
-//
-//		ratingService.save(rate, userId, paperId);
-//
-//		return REDIRECT_PAPER_DETAILS + paperId;
-//	}
-//
-//	@PostMapping(UNDO_RATE_PATH)
-//	public String processUndoRating(@RequestParam long paperId, HttpSession session) {
-//
-//		checkAccess(session, Role.REGULAR);
-//
-//		long userId = (long) session.getAttribute(ID_ATTR);
-//
-//		ratingService.delete(userId, paperId);
-//
-//		return REDIRECT_PAPER_DETAILS + paperId;
-//	}
-//
-//	@PostMapping(CHANGE_RATE_PATH)
-//	public String processChangeRating(@RequestParam long paperId,
-//	                                  @RequestParam int rate,
-//	                                  HttpSession session) {
-//
-//		long userId = (long) session.getAttribute(ID_ATTR);
-//
-//		ratingService.update(rate, userId, paperId);
-//
-//		return REDIRECT_PAPER_DETAILS + paperId;
-//	}
-//
-//	@PostMapping("save-or-unsave")
-//	public String processSaveOrUnsave(@RequestParam long paperId,
-//	                                  @RequestParam String action,
-//	                                  HttpSession session) {
-//
-//		long userId = (long) session.getAttribute(ID_ATTR);
-//
-//		paperService.saveOrUnsavePaper(userId, paperId, action);
-//
-//		return REDIRECT_PAPER_DETAILS + paperId;
-//	}
+	@PostMapping("/rate/{paperId}")
+	public String processRating(@PathVariable long paperId,
+	                            @RequestParam int rate,
+	                            HttpSession session) {
+
+		UserDetails sessionUser = (UserDetails) session.getAttribute("user");
+		User user = userService.findByEmail(sessionUser.getUsername());
+
+		ratingService.save(rate, user, paperId);
+
+		return "redirect:/paper/" + paperId;
+	}
+
+	@PostMapping("/rate/undo")
+	public String processUndoRating(@RequestParam long paperId, HttpSession session) {
+		UserDetails sessionUser = (UserDetails) session.getAttribute("user");
+		User user = userService.findByEmail(sessionUser.getUsername());
+
+		ratingService.delete(user, paperId);
+
+		return "redirect:/paper/" + paperId;
+	}
+
+	@PostMapping("/rate/change")
+	public String processChangeRating(@RequestParam long paperId,
+	                                  @RequestParam int rate,
+	                                  HttpSession session) {
+
+		UserDetails sessionUser = (UserDetails) session.getAttribute("user");
+		User user = userService.findByEmail(sessionUser.getUsername());
+
+		ratingService.update(rate, user, paperId);
+
+		return "redirect:/paper/" + paperId;
+	}
+
+	@PostMapping("/save-or-unsave")
+	public String processSaveOrUnsave(@RequestParam long paperId,
+	                                  @RequestParam String action,
+	                                  HttpSession session) {
+
+		UserDetails sessionUser = (UserDetails) session.getAttribute("user");
+		User user = userService.findByEmail(sessionUser.getUsername());
+
+		paperService.saveOrUnsavePaper(user.getId(), paperId, action);
+
+		return  "redirect:/paper/" + paperId;
+	}
 
 	@GetMapping("/search")
 	@ResponseBody

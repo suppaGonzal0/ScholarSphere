@@ -1,7 +1,9 @@
 package net.therap.scholarsphere.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import net.therap.scholarsphere.enums.Action;
 import net.therap.scholarsphere.model.Comment;
+import net.therap.scholarsphere.model.Paper;
 import net.therap.scholarsphere.model.User;
 import net.therap.scholarsphere.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,15 @@ public class CommentService {
 	private UserService userService;
 
 	@Autowired
+	private PaperService paperService;
+
+	@Autowired
 	private NotificationService notificationService;
 
 	@Transactional
 	public void save(Comment comment, User user) {
+		Paper paper = paperService.findById(comment.getPaper().getId());
+		comment.setPaper(paper);
 		comment.setUser(user);
 
 		commentRepository.save(comment);

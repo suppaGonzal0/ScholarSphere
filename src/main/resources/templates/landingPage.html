@@ -1,40 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<div th:replace="~{fragments/header}"></div>
-		<title th:text="#{title.home}"/>
-	</head>
-	<body class="text-center gap-3">
-		<div th:replace="~{fragments/landingPageNavbar}"></div>
 
-		<div class="section">
-			<div class="sub">
-				<img th:src="@{/images/search.svg}" alt="search">
-			</div>
-			<div class="sub">
-				<h2>Discover scientific knowledge and <br> stay connected to the world of science</h2>
-			</div>
+<head>
+	<div th:replace="~{fragments/header}"></div>
+	<title th:text="#{title.home}" />
+</head>
+
+<body class="text-center gap-3">
+<div th:replace="~{fragments/landingPageNavbar}"></div>
+
+<div class="container-fluid">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-lg-6 col-md-12">
+			<img class="img-fluid" th:src="@{/images/search.svg}" alt="search">
 		</div>
-
-		<div class="section">
-			<div class="sub">
-				<h2>Connect with your scientific community</h2>
-				<p>Share your research, collaborate with your peers and
-					<br>get the support you need to advance your career</p>
-			</div>
-			<div class="sub">
-				<img th:src="@{/images/world.svg}" alt="world">
-			</div>
+		<div class="col-lg-6 col-md-12">
+			<h2 class="h4 h-lg2 mb-4">Discover scientific knowledge and <br> stay connected to the world of science</h2>
 		</div>
+	</div>
+</div>
 
-		<div class="section flex-column justify-content-center">
-			<img class="last" th:src="@{/images/analytics.svg}" alt="analytics">
-			<h2 class="my-3">Explore Scientific Trends and Innovations</h2>
-			<a class="nav-item nav-link btn" th:href="@{/register}">
-				<b th:text="#{label.join.now}"/>
-			</a>
+<div class="container-fluid">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-lg-6 col-md-12 order-2 order-md-1">
+			<h2 class="h4 h-lg2 mb-4">Connect with your scientific community</h2>
+			<p>Share your research, collaborate with your peers and<br>get the support you need to advance your career</p>
 		</div>
+		<div class="col-lg-6 col-md-12 order-1 order-md-2">
+			<img class="img-fluid" th:src="@{/images/world.svg}" alt="world">
+		</div>
+	</div>
+</div>
 
-		<div th:replace="~{fragments/footer}"></div>
-	</body>
+
+<div class="container-fluid text-center my-5">
+	<img class="img-fluid mb-3 last" th:src="@{/images/analytics.svg}" alt="analytics">
+	<h2 class="h4 h-lg2">Explore Scientific Trends and Innovations</h2>
+	<a class="btn my-4" th:href="@{/register}">
+		<b th:text="#{label.join.now}" />
+	</a>
+</div>
+
+<div th:replace="~{fragments/footer}"></div>
+</body>
+
 </html>

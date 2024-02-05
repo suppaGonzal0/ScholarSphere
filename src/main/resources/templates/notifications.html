@@ -10,12 +10,12 @@
 		<div class="d-flex flex-column align-items-center mt-5" style="min-height: 70vh;">
 			<h3>Notifications</h3>
 
-			<div th:switch="${#lists.isEmpty(notifications)}">
+			<div class="mx-3" th:switch="${#lists.isEmpty(notifications)}">
 				<div th:case="false">
-					<form action="/notification" method="post" class="w-50 mt-4 d-flex justify-content-end">
+					<form action="/notification" method="post" class="mt-4 d-flex justify-content-end">
 						<button type="submit" class="btn" style="width: 200px">Mark As Read</button>
 					</form>
-					<div th:each="notification : ${notifications}" class="card p-3 my-2 w-50" th:text="${notification.message}"></div>
+					<div th:each="notification : ${notifications}" class="card p-3 my-2" th:text="${notification.message}"></div>
 				</div>
 				<div th:case="true">
 					<div class="card p-5 my-5">

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "comment")
+@ToString
 public class Comment extends BaseEntity {
 
 	@Serial

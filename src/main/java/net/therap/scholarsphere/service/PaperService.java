@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static net.therap.scholarsphere.enums.Action.CREATE;
+
 /**
  * @author mehzabinaothoi
  * @since 1/9/24
@@ -29,10 +31,12 @@ public class PaperService {
 	}
 
 	@Transactional
-	public void create(Paper paper) {
+	public void saveOrUpdate(Paper paper, Action action) {
 		paperRepository.save(paper);
 
-		notificationService.notifyFollowers(paper.getAuthors());
+		if (action.equals(CREATE)) {
+			notificationService.notifyFollowers(paper.getAuthors());
+		}
 	}
 
 	public List<Paper> findAll(String sort) {

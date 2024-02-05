@@ -2,6 +2,7 @@ package net.therap.scholarsphere.repository;
 
 import net.therap.scholarsphere.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE a.authority = 'ROLE_REGULAR'", nativeQuery = true)
     List<User> findAllRegularUsers();
 
+    @Modifying
+    @Query(value = "INSERT INTO Authorities (email, authority) VALUES (?1, 'ROLE_REGULAR')", nativeQuery = true)
+    void createRegularRole(String email);
 }

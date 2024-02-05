@@ -13,7 +13,7 @@
 				<hr/>
 				<div class="d-flex flex-wrap gap-2">
 					<b>Authors:</b>
-					<a th:each="author : ${paper.authors}" th:href="@{/profile/{id}(id=${author.id})}"
+					<a th:each="author : ${paper.authors}" th:href="@{/profile(id=${author.id})}"
 					   th:text="${author.email}"></a>
 				</div>
 				<hr/>
@@ -23,7 +23,10 @@
 							th:text="${tag.name}"></span></a>
 				</div>
 				<hr/>
-				<p class="m-0" th:text="${paper.conference.title + ' • ' + paper.conference.location.city + ', ' + paper.conference.location.country}"></p>
+				<p class="m-0">
+					<a th:href="@{/conference/{id}(id=${paper.conference.id})}" th:text="${paper.conference.title}"></a>
+					<span th:text="${' • ' + paper.conference.location.city + ', ' + paper.conference.location.country}"/>
+				</p>
 
 				<hr/>
 				<div class="d-flex align-items-center">
@@ -32,7 +35,7 @@
 						<span th:text="${#dates.format(paper.publicationDate, 'MMMM yyyy')}"></span>
 					</p>
 					<a class="btn btn-sm w-auto d-flex align-items-center gap-1"
-					   th:href="@{/paper/{id}/download(id=${paper.id})}">
+					   th:href="@{/paper-download/{id}(id=${paper.id})}">
 						<span class="material-icons">picture_as_pdf</span>
 						<span>PDF</span>
 					</a>
@@ -59,9 +62,9 @@
 							</div>
 							<div th:case="*">
 								<div id="currentRating">
-<!--									<p class="m-0" th:text="'You have rated this paper ' + ${userRating} + '/5'"></p>-->
+									<p class="m-0" th:text="'You have rated this paper ' + ${userRating} + '/5'"></p>
 									<form th:action="@{/paper/rate/undo}" method="post">
-										<input hidden="hidden" type="number" name="paperId" th:value="${paper.id}"/>
+										<input hidden="hidden" name="paperId" th:value="${paper.id}"/>
 										<div class="d-flex gap-2">
 											<button type="submit" style="width: 80px" class="btn btn-sm unfollow">undo
 											</button>
@@ -73,7 +76,7 @@
 								</div>
 								<div id="ratingSelectForm" style="display: none;">
 									<form th:action="@{/paper/rate/change}" method="post" class="d-flex gap-2">
-										<input hidden="hidden" type="number" name="paperId" th:value="${paper.id}"/>
+										<input hidden="hidden" name="paperId" th:value="${paper.id}"/>
 										<select name="rate" class="form-select" style="width: 100px"
 										        aria-label="select">
 											<option value="1">1</option>
@@ -95,14 +98,14 @@
 					<div class="saved">
 						<div th:switch="${isSaved}">
 							<div th:case="true">
-								<form th:action="@{/paper/save_or_unsave(action='unsave')}" method="post">
-									<input hidden="hidden" value="${paper.id}" name="paperId"/>
+								<form th:action="@{/paper/save-or-unsave(action='unsave')}" method="post">
+									<input hidden="hidden" th:value="${paper.id}" name="paperId"/>
 									<button class="btn unfollow" style="width: 80px" type="submit">unsave</button>
 								</form>
 							</div>
 							<div th:case="false">
-								<form th:action="@{/paper/save_or_unsave(action='save')}" method="post">
-									<input hidden="hidden" value="${paper.id}" name="paperId"/>
+								<form th:action="@{/paper/save-or-unsave(action='save')}" method="post">
+									<input hidden="hidden" th:value="${paper.id}" name="paperId"/>
 									<button class="btn" style="width: 80px" type="submit">save</button>
 								</form>
 							</div>
@@ -115,9 +118,9 @@
 						<h5>Comments</h5>
 					</div>
 					<div class="d-flex gap-2">
-						<a th:href="@{/paper(sort='top', id=${paper.id})}">Top</a>
-						<a th:href="@{/paper(sort='newest', id=${paper.id})}">Newest</a>
-						<a th:href="@{/paper(sort='oldest', id=${paper.id})}">Oldest</a>
+						<a th:href="@{/paper/{id}(id=${paper.id}, sort='top')}">Top</a>
+						<a th:href="@{/paper/{id}(id=${paper.id}, sort='newest')}">Newest</a>
+						<a th:href="@{/paper/{id}(id=${paper.id}, sort='oldest')}">Oldest</a>
 					</div>
 				</div>
 
@@ -144,7 +147,7 @@
 					<div class="d-flex">
 						<div class="d-flex flex-grow-1 m-0">
 							<b>
-								<a th:href="@{/profile/{id}(id=${comment.user.id})}"
+								<a th:href="@{/profile(id=${comment.user.id})}"
 								   th:text="${comment.user.fullName}"></a>
 							</b>
 						</div>
@@ -154,7 +157,7 @@
 					</div>
 					<p class="mt-2" th:text="${comment.text}"/>
 					<div class="d-flex align-items-center gap-3">
-						<p th:text="${#strings.length(comment.likedByUsers)} + ' Likes'"/>
+						<p th:text="${#lists.size(comment.likedByUsers)} + ' Likes'"/>
 						<div th:switch="${comment.likedByUsers.contains(user)}">
 							<div th:case="true">
 								<form th:action="@{/comment/unlike}" method="post">

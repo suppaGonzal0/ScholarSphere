@@ -20,7 +20,6 @@ hr {
 }
 
 .btn {
-    width: 100%;
     background-color: #213555;
     color: #fff;
     transition: background-color 0.3s ease, color 0.3s ease;
@@ -40,24 +39,24 @@ img {
     height: 10em;
 }
 
-.section {
-    height: 90vh;
-    display: flex;
-    align-items: center;
+.container-fluid  {
+    /*height: 90vh;*/
+    /*display: flex;*/
+    /*align-items: center;*/
 
     .last {
         width: 25em;
         height: 25em;
     }
 
-    & a:hover, & button:hover {
-        background-color: #BDC3CC;
-        color: #213555;
-    }
+    /*& a:hover, & button:hover {*/
+    /*    background-color: #BDC3CC;*/
+    /*    color: #213555;*/
+    /*}*/
 
-    & a {
-        width: 25em;
-    }
+    /*& a {*/
+    /*    width: 25em;*/
+    /*}*/
 
     &:nth-child(odd) {
         background-color: #ffffff;

@@ -39,7 +39,7 @@ public class GlobalExceptionHandlerAdvice {
     public String handleAccessDeniedException(AccessDeniedException e, Model model) {
         log.error(e.getMessage());
 
-        model.addAttribute(KEY_ERROR, new Error("403", "FORBIDDEN", "You are not authorized to access this page."));
+        model.addAttribute(KEY_ERROR, new Error("403", "Forbidden", "You are not authorized to access this page."));
 
         return ERROR_PAGE;
     }
@@ -64,7 +64,11 @@ public class GlobalExceptionHandlerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public void handleException(Exception e) {
+    public String handleException(Exception e, Model model) {
         log.error(e.getMessage());
+
+        model.addAttribute(KEY_ERROR, new Error("", "", "Something Went Wrong"));
+
+        return ERROR_PAGE;
     }
 }
